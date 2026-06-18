@@ -12,8 +12,8 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Find Qt (supports Qt5 and Qt6)
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets LinguistTools)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets LinguistTools)
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets LinguistTools Charts)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets LinguistTools Charts)
 
 # --- Add the DLL subproject ---
 add_subdirectory(BioAnalyzerDLL)
@@ -51,7 +51,7 @@ else()
 endif()
 
 # Link Qt libraries
-target_link_libraries(BioAnalyzerApp PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
+target_link_libraries(BioAnalyzerApp PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Charts)
 
 # --- Copy the DLL to the output directory (Windows only) ---
 if(WIN32)
