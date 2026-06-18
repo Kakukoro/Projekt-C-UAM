@@ -38,6 +38,8 @@ private:
     typedef const char* (*TranslacjaFunc)(const char*);
     typedef const char* (*WyszukajMotywFunc)(const char*, const char*);
     typedef const char* (*AnalizujMutacjeFunc)(const char*, const char*);
+    typedef const char* (*PobierzSkladProcentowyFunc)(const char*);
+    typedef const char* (*ObliczGCFunc)(const char*, int);
 
     // Wskaźniki do funkcji DLL
     RozpoznajTypFunc rozpoznajTypFunc;
@@ -47,6 +49,8 @@ private:
     TranslacjaFunc translacjaFunc;
     WyszukajMotywFunc wyszukajMotywFunc;
     AnalizujMutacjeFunc analizujMutacjeFunc;
+    PobierzSkladProcentowyFunc pobierzSkladProcentowyFunc;
+    ObliczGCFunc obliczGCFunc;
 
     bool zaladujDLL();
 };
