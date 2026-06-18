@@ -11,67 +11,60 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+<<<<<<< Updated upstream
 # Find Qt (supports Qt5 and Qt6)
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets LinguistTools Charts)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets LinguistTools Charts)
+=======
+# Find Qt6 (only Qt6, no Qt5 fallback)
+find_package(Qt6 REQUIRED COMPONENTS Widgets Charts LinguistTools)
+>>>>>>> Stashed changes
 
-# --- Add the DLL subproject ---
+# Add the DLL subproject
 add_subdirectory(BioAnalyzerDLL)
 
-# --- Translation files ---
+# Translation files
 set(TS_FILES BioAnalyzerApp_pl_PL.ts)
+qt_create_translation(QM_FILES ${CMAKE_CURRENT_SOURCE_DIR} ${TS_FILES})
 
-if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
-    qt_create_translation(QM_FILES ${CMAKE_CURRENT_SOURCE_DIR} ${TS_FILES})
-else()
-    qt5_create_translation(QM_FILES ${CMAKE_CURRENT_SOURCE_DIR} ${TS_FILES})
-endif()
-
-# --- Qt app sources ---
+# Qt app sources
 set(PROJECT_SOURCES
     main.cpp
     mainwindow.cpp
     mainwindow.h
     mainwindow.ui
-    ${QM_FILES}  # Include translation files
+    ${QM_FILES}
 )
 
-# --- Create the Qt executable ---
-if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
-    qt_add_executable(BioAnalyzerApp
-        MANUAL_FINALIZATION
-        ${PROJECT_SOURCES}
-    )
-else()
-    if(ANDROID)
-        add_library(BioAnalyzerApp SHARED ${PROJECT_SOURCES})
-    else()
-        add_executable(BioAnalyzerApp ${PROJECT_SOURCES})
-    endif()
-endif()
+# Create the Qt executable
+qt_add_executable(BioAnalyzerApp MANUAL_FINALIZATION ${PROJECT_SOURCES})
+qt_finalize_executable(BioAnalyzerApp)
 
+<<<<<<< Updated upstream
 # Link Qt libraries
 target_link_libraries(BioAnalyzerApp PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Charts)
+=======
+# Link Qt libraries (including Charts)
+target_link_libraries(BioAnalyzerApp PRIVATE Qt6::Widgets Qt6::Charts)
+>>>>>>> Stashed changes
 
-# --- Copy the DLL to the output directory (Windows only) ---
+# Copy the DLL to the output directory (Windows only)
 if(WIN32)
     add_custom_command(TARGET BioAnalyzerApp POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy
-            "$<TARGET_FILE:BioAnalyzerDLL>"  # Source: Built DLL
-            "$<TARGET_FILE_DIR:BioAnalyzerApp>/BioAnalyzer.dll"  # Destination: Next to the .exe
+            "$<TARGET_FILE:BioAnalyzerDLL>"
+            "$<TARGET_FILE_DIR:BioAnalyzerApp>/BioAnalyzer.dll"
     )
 endif()
 
-# --- macOS/iOS bundle settings ---
-if(${QT_VERSION} VERSION_LESS 6.1.0)
-    set(BUNDLE_ID_OPTION MACOSX_BUNDLE_GUI_IDENTIFIER com.example.BioAnalyzerApp)
-endif()
+# macOS/iOS bundle settings (optional)
 set_target_properties(BioAnalyzerApp PROPERTIES
-    ${BUNDLE_ID_OPTION}
+    MACOSX_BUNDLE TRUE
+    MACOSX_BUNDLE_GUI_IDENTIFIER com.example.BioAnalyzerApp
     MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
     MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
-    MACOSX_BUNDLE TRUE
     WIN32_EXECUTABLE TRUE
+<<<<<<< Updated upstream
 )
 
 # --- Installation (optional) ---
@@ -86,3 +79,6 @@ install(TARGETS BioAnalyzerApp
 if(${QT_VERSION_MAJOR} EQUAL 6)
     qt_finalize_executable(BioAnalyzerApp)
 endif()
+=======
+)
+>>>>>>> Stashed changes

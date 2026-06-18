@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include <QMessageBox>
 #include <QDebug>
+<<<<<<< Updated upstream
 #include <QChartView>
 #include <QBarSet>
 #include <QBarSeries>
@@ -11,6 +12,17 @@
 #include <QChart>
 
 using namespace QT_CHARTS_NAMESPACE;
+=======
+#include <QtCharts/QChartView>    // Qt Charts headers
+#include <QtCharts/QBarSet>
+#include <QtCharts/QBarSeries>
+#include <QtCharts/QBarCategoryAxis>
+#include <QtCharts/QLineSeries>
+#include <QtCharts/QValueAxis>
+#include <QtCharts/QChart>
+
+// NO using namespace QtCharts; (Qt 6 does NOT use a namespace for Charts)
+>>>>>>> Stashed changes
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     // Główne okno i układ
@@ -45,6 +57,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     QGroupBox *buttonsGroup = new QGroupBox("Operacje", this);
     QHBoxLayout *buttonsLayout = new QHBoxLayout(buttonsGroup);
 
+    // Deklaruj przyciski jako zmienne lokalne (nie muszą być memberami, jeśli nie są używane poza konstruktorem)
     QPushButton *analyzeButton = new QPushButton("Analizuj Sekwencję", this);
     QPushButton *transcribeButton = new QPushButton("Transkrypcja (DNA → RNA)", this);
     QPushButton *complementaryButton = new QPushButton("Nić Komplementarna", this);
@@ -99,9 +112,16 @@ bool MainWindow::zaladujDLL() {
     analizujMutacjeFunc = (AnalizujMutacjeFunc)dll->resolve("analizujMutacje");
     pobierzSkladProcentowyFunc = (PobierzSkladProcentowyFunc)dll->resolve("pobierzSkladProcentowy");
     obliczGCFunc = (ObliczGCFunc)dll->resolve("obliczGC");
+<<<<<<< Updated upstream
     
     if (!rozpoznajTypFunc || !analizujSekwencjeFunc || !transkrypcjaFunc ||
         !nicKomplementarnaFunc || !translacjaFunc || !wyszukajMotywFunc || !analizujMutacjeFunc) || !pobierzSkladProcentowyFunc || !obliczGCFunc) {
+=======
+
+    if (!rozpoznajTypFunc || !analizujSekwencjeFunc || !transkrypcjaFunc ||
+        !nicKomplementarnaFunc || !translacjaFunc || !wyszukajMotywFunc ||
+        !analizujMutacjeFunc || !pobierzSkladProcentowyFunc || !obliczGCFunc) {
+>>>>>>> Stashed changes
         qWarning() << "Nie udało się rozpoznać jednej lub więcej funkcji!";
         return false;
     }
@@ -115,12 +135,20 @@ void MainWindow::analizujSekwencje() {
         return;
     }
 
+<<<<<<< Updated upstream
     // 1. Dotychczasowa analiza tekstowa
     const char* result = analizujSekwencjeFunc(seq.toStdString().c_str());
     output->append(QString::fromUtf8(result));
 
     // wykres = rozklad nukleotydow (Słupkowy)
     
+=======
+    // Text analysis
+    const char* result = analizujSekwencjeFunc(seq.toStdString().c_str());
+    output->append(QString::fromUtf8(result));
+
+    // Bar chart: Nucleotide composition
+>>>>>>> Stashed changes
     double pctA = 25.0, pctT = 25.0, pctG = 25.0, pctC = 25.0;
     if (pobierzSkladProcentowyFunc) {
         QString skladStr = QString::fromUtf8(pobierzSkladProcentowyFunc(seq.toStdString().c_str()));
@@ -133,6 +161,10 @@ void MainWindow::analizujSekwencje() {
         }
     }
 
+<<<<<<< Updated upstream
+=======
+    // Use Qt Charts classes directly (no namespace)
+>>>>>>> Stashed changes
     QBarSet *set = new QBarSet("Nukleotydy (%)");
     *set << pctA << pctT << pctG << pctC;
 
@@ -157,30 +189,48 @@ void MainWindow::analizujSekwencje() {
     barChart->addAxis(axisYBar, Qt::AlignLeft);
     barSeries->attachAxis(axisYBar);
 
+<<<<<<< Updated upstream
     QChartView *barChartView = new QChartView(barChart);
     barChartView->setRenderHint(QPainter::Antialiasing);
     barChartView->resize(500, 400);
+=======
+    QChartView *barChartView = new QChartView(barChart, this);
+    barChartView->setRenderHint(QPainter::Antialiasing);
+>>>>>>> Stashed changes
     barChartView->setWindowTitle("Rozkład ATGC");
     barChartView->setAttribute(Qt::WA_DeleteOnClose);
     barChartView->show();
 
+<<<<<<< Updated upstream
     // wykres 2 = zawartosc GC (Liniowy)
     
+=======
+    // Line chart: GC content (sliding window)
+>>>>>>> Stashed changes
     QLineSeries *lineSeries = new QLineSeries();
     lineSeries->setName("Zawartość GC (%)");
 
     int maxX = 0;
     if (obliczGCFunc) {
+<<<<<<< Updated upstream
         // Okno przesuwne o wielkości 10 nukleotydów
         QString gcStr = QString::fromUtf8(obliczGCFunc(seq.toStdString().c_str(), 10));
         QStringList punkty = gcStr.split(",", Qt::SkipEmptyParts);
         
+=======
+        QString gcStr = QString::fromUtf8(obliczGCFunc(seq.toStdString().c_str(), 10));
+        QStringList punkty = gcStr.split(",", Qt::SkipEmptyParts);
+>>>>>>> Stashed changes
         for (int i = 0; i < punkty.size(); ++i) {
             lineSeries->append(i, punkty[i].toDouble());
         }
         maxX = punkty.size() - 1;
     } else {
+<<<<<<< Updated upstream
         // Wartości demonstracyjne (fallback)
+=======
+        // Fallback: Demo values
+>>>>>>> Stashed changes
         for (int i = 0; i < seq.length(); ++i) {
             lineSeries->append(i, 40.0 + (i % 3) * 10.0);
         }
@@ -205,6 +255,7 @@ void MainWindow::analizujSekwencje() {
     lineChart->addAxis(axisYLine, Qt::AlignLeft);
     lineSeries->attachAxis(axisYLine);
 
+<<<<<<< Updated upstream
     QChartView *lineChartView = new QChartView(lineChart);
     lineChartView->setRenderHint(QPainter::Antialiasing);
     lineChartView->resize(600, 400);
@@ -213,9 +264,17 @@ void MainWindow::analizujSekwencje() {
     
     // Przesunięcie okna, żeby się nie nakładały
     lineChartView->move(barChartView->x() + 520, barChartView->y());
+=======
+    QChartView *lineChartView = new QChartView(lineChart, this);
+    lineChartView->setRenderHint(QPainter::Antialiasing);
+    lineChartView->setWindowTitle("Analiza GC-Content");
+    lineChartView->setAttribute(Qt::WA_DeleteOnClose);
+    lineChartView->move(barChartView->x() + barChartView->width() + 10, barChartView->y());
+>>>>>>> Stashed changes
     lineChartView->show();
 }
 
+// Rest of your slot implementations (transkrybujDNA, pobierzNicKomplementarna, etc.)
 void MainWindow::transkrybujDNA() {
     QString dna = sequenceInput->text();
     if (dna.isEmpty()) {
